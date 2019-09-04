@@ -5,11 +5,14 @@ services:
     - docker
 script:
     - docker run --rm -it -v $(pwd):/app fffaraz/qt:static /bin/bash -c "cd /app && qmake && make"
+    - docker run --rm -it -v $(pwd):/app fffaraz/qt:windows /bin/bash -c "cd /app && /opt/mxe/usr/bin/i686-w64-mingw32.static-qmake-qt5 && make"
 deploy:
     provider: releases
     api_key: $PWA_TO_TWA_ACCESS_KEY
     skip_cleanup: true
-    file: pwa-to-twa
+    file:
+        - pwa-to-twa
+        - release/pwa-to-twa.exe
     on:
         tags: true
 branches:
