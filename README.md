@@ -34,6 +34,9 @@ This tool takes exactly three parameters:
 2. The PWA url (e.g. `https://my_pwa.example.com`)
 3. The output directory (e.g. `./my-cool-pwa`)
 
+> Note: Currently the splash image is not replaced from the default
+value, it will be in a future version
+
 ## Dependencies
 
 This tool needs these cli tools to be able to work:
