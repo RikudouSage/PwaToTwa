@@ -7,8 +7,7 @@ script:
     - docker run --rm -it -v $(pwd):/app fffaraz/qt:static /bin/bash -c "cd /app && qmake && make"
 deploy:
     provider: releases
-    api_key:
-        secure: cj+Fomkm8yBHG+yMg3UVy71XVGA3I8cdLk9X+yfuXIVMrUXW2Jj8JgnLOGZ02Fnz8fFTpZ3Hq3OwSrm2GcFyysYY4qubwYwBK4RLQqGPmnihL8ULgiF2FKQ5Sx5JVzIhxaqEbm4FYh+dPO2jh0SmhQN+T/X8XhFAdj4irBgjWqeXbgsd+qcsfZAlPoxlTToYssMQ71iqYAYP/7uv4Qa6YoceUXY6ntW0P9Gk5OUQS4Rq/6hInul2rBn4AVpNn5iH7JmROopp6/8tuTEeF8qCVfOqr2+wEv0h4Urbw3P/vHmX7Ds6k3Q6bRjWBQputpmBuwjqPilENFnzEN4KZ/IkVn0zTwy3g2wH3pPidlZdUSW+oGnVbfd0vD+/WMHo2TPqLpKNISt6/rUfm4XDCxQnhk+fgrNoxjBN79OKZfKQszUi26KLZweHcP+sGHhrgJ/wJRyqn5Kl+IUG8KA4Sb21m2oNcG8ChpMPgxGSUDipJw06Xnqtt9FUuojqht2ka9CLHEOubHJCY4x3J7R44b70A7KDkldFmttxaysDZE4Ae7HRCUnBEEJVczD93QshQ+hkQmnhyoMFqHxwgfn3tOjWgo6dDv7PgK9snphrMoDgIpW4leUGZMgAEyvU2Ie2UyNznC7w7TYBHzSlptK8lAty8Jme28oYjjT9Id5FO1VNRU4=
+    api_key: "$PWA_TO_TWA_ACCESS_KEY"
     skip_cleanup: true
     file: pwa-to-twa
     on:
