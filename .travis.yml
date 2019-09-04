@@ -13,4 +13,7 @@ deploy:
     file: pwa-to-twa
     on:
         tags: true
+branches:
+    only:
+        - /^v\d+\.\d+(\.\d+)?(-\S*)?$/
 
