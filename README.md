@@ -28,11 +28,23 @@ or compile it yourself.
 
 ## Usage
 
-This tool takes exactly three parameters:
+This tool takes three parameters:
 
 1. The android package name (e.g. `com.example.my_pwa`)
 2. The PWA url (e.g. `https://my_pwa.example.com`)
 3. The output directory (e.g. `./my-cool-pwa`)
+
+If the manifest path is not in html source code or could
+not be detected for any other reason, you can add the
+relative path to your manifest using the --manifest option.
+
+Example:
+
+`pwa-to-twa com.example.my_pwa https://my_pwa.example.com ./my-cool-pwa`
+
+Example with --manifest option:
+
+`pwa-to-twa com.example.my_pwa https://my_pwa.example.com ./my-cool-pwa --manifest /manifest.json`
 
 > Note: Currently the splash image is not replaced from the default
 value, it will be in a future version
@@ -58,8 +70,9 @@ that everything works run `./pwa-to-twa`, you should see
 something like this:
 
 ```
-Wrong input, usage: pwa-to-twa [androidPackageName] [pwaUrl] [outputPath]
+Wrong input, usage: pwa-to-twa androidPackageName pwaUrl outputPath [--manifest path-to-manifest]
 Example: pwa-to-twa com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa
+Example: pwa-to-twa com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa --manifest relative/path/to/manifest
 ```
 
 ### Building statically

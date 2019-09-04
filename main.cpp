@@ -12,9 +12,21 @@ int main(int argc, char *argv[])
         QCoreApplication app(argc, argv);
 
         if(app.arguments().count() < 4) {
-            qCritical() << "Wrong input, usage: pwa-to-twa [androidPackageName] [pwaUrl] [outputPath]";
+            qCritical() << "Wrong input, usage: pwa-to-twa androidPackageName pwaUrl outputPath [--manifest path-to-manifest]";
             qCritical() << "Example: pwa-to-twa com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa";
+            qCritical() << "Example: pwa-to-twa com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa --manifest relative/path/to/manifest";
             return 1;
+        }
+
+        QString manifestPath;
+
+        if(app.arguments().contains("--manifest")) {
+            int index = app.arguments().indexOf("--manifest") + 1;
+            if(app.arguments().count() <= index) {
+                qCritical() << "You must set a value for --manifest";
+                return 1;
+            }
+            manifestPath = app.arguments().at(index);
         }
 
         auto url = app.arguments().at(2);
@@ -27,7 +39,7 @@ int main(int argc, char *argv[])
         gitHelper.checkout(outputDirectory);
         gitHelper.reinitGitDirectory(outputDirectory);
 
-        WebsiteParser parser(url);
+        WebsiteParser parser(url, manifestPath);
 
         auto icons = parser.getImages();
         auto basicData = parser.getData();

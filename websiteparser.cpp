@@ -1,8 +1,9 @@
 #include "websiteparser.h"
 
-WebsiteParser::WebsiteParser(QString url)
+WebsiteParser::WebsiteParser(QString url, QString manifestPath)
 {
     m_url.setUrl(url);
+    m_manifestPath = manifestPath;
 }
 
 const QString WebsiteParser::getWebsiteContent()
@@ -32,21 +33,29 @@ const QString WebsiteParser::getWebsiteContent()
 
 const QString WebsiteParser::getManifestUrl()
 {
-    QRegularExpression regex("(<link.*?rel=['\"]manifest['\"]).*?>");
-    auto matches = regex.match(getWebsiteContent());
-    if(!matches.hasMatch()) {
-        throw QString("The website does not contain a manifest");
+    QString manifestUrl;
+
+    if(!m_manifestPath.isNull() && !m_manifestPath.isEmpty()) {
+        manifestUrl = m_manifestPath;
+    } else {
+        QRegularExpression regex("(<link.*?rel=['\"]manifest['\"]).*?>");
+        auto matches = regex.match(getWebsiteContent());
+        if(!matches.hasMatch()) {
+            throw QString("Could not detect the manifest automatically, try using --manifest option");
+        }
+
+        QString linkTag = matches.captured(0);
+
+        QRegularExpression regexManifest("href=[\"'](.+?)[\"']");
+        auto matchesManifest = regexManifest.match(linkTag);
+        if(!matchesManifest.hasMatch()) {
+            throw QString("Could not find href inside the manifest link");
+        }
+
+        manifestUrl = matchesManifest.captured(1);
     }
 
-    QString linkTag = matches.captured(0);
-
-    QRegularExpression regexManifest("href=[\"'](.+?)[\"']");
-    auto matchesManifest = regexManifest.match(linkTag);
-    if(!matchesManifest.hasMatch()) {
-        throw QString("Could not find href inside the manifest link");
-    }
-
-    return getUrl(matchesManifest.captured(1));
+    return getUrl(manifestUrl);
 }
 
 const QJsonDocument WebsiteParser::getManifestContent()
@@ -103,7 +112,8 @@ const QList<QHash<QString, QString>> WebsiteParser::getImages()
         auto sizes = icon.take("sizes").toString().split("x");
 
         if(sizes.length() != 2 || sizes.at(0) != sizes.at(1)) {
-            throw QString("Invalid size attribute for icon");
+            qWarning() << "[Warning] The icon does not have a valid size attribute, ignoring";
+            continue;
         }
 
         QHash<QString, QString> iconHash;
@@ -111,7 +121,6 @@ const QList<QHash<QString, QString>> WebsiteParser::getImages()
         iconHash.insert("url", getUrl(icon.take("src").toString()));
         result.append(iconHash);
     }
-
 
     return result;
 }
@@ -129,6 +138,8 @@ QString WebsiteParser::getUrl(const QString url)
 
     if(!url.startsWith("/")) {
         tmp = "/" + url;
+    } else {
+        tmp = url;
     }
 
     QString baseUrl = m_url.toString();

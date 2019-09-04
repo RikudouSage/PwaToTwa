@@ -16,7 +16,7 @@
 class WebsiteParser
 {
 public:
-    WebsiteParser(QString url);
+    WebsiteParser(QString url, QString manifestPath);
 
     const QHash<QString, QString> getData();
     const QList<QHash<QString, QString>> getImages();
@@ -29,6 +29,7 @@ private:
 
     QString m_websiteContent;
     QString m_manifestContent;
+    QString m_manifestPath;
     QUrl m_url;
 };
 
