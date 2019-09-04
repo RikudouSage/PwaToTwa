@@ -1,4 +1,6 @@
-language: c++
+language: cpp
+dist: bionic
+compiler: gcc
 
 services:
 	- docker
