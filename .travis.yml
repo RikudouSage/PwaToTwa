@@ -7,7 +7,7 @@ script:
     - docker run --rm -it -v $(pwd):/app fffaraz/qt:static /bin/bash -c "cd /app && qmake && make"
 deploy:
     provider: releases
-    api_key: "$PWA_TO_TWA_ACCESS_KEY"
+    api_key: $PWA_TO_TWA_ACCESS_KEY
     skip_cleanup: true
     file: pwa-to-twa
     on:
