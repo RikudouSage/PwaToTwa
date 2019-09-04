@@ -1,7 +1,5 @@
 #include "androidprojectmodifier.h"
 
-#include <QDebug>
-
 AndroidProjectModifier::AndroidProjectModifier(QString path)
 {
     m_directory = QDir(path);

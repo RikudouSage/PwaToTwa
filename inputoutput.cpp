@@ -15,7 +15,7 @@ void InputOutput::writeln(QString text)
     write(text + "\n");
 }
 
-QString InputOutput::readStdin()
+/*QString InputOutput::readStdin()
 {
     std::string result;
     std::cin >> result;
@@ -28,3 +28,4 @@ QString InputOutput::ask(QString question)
     write(question + ": ");
     return readStdin();
 }
+*/

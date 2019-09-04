@@ -1,7 +1,4 @@
 #include <QCoreApplication>
-#include <iostream>
-
-#include <QDebug>
 
 #include "inputoutput.h"
 #include "githelper.h"
@@ -14,27 +11,15 @@ int main(int argc, char *argv[])
     try {
         QCoreApplication app(argc, argv);
 
-        QString url;
-        QString packageName;
-        QString outputDirectory;
-
         if(app.arguments().count() < 4) {
-            outputDirectory = io.ask("Please input the output path");
-        } else {
-            outputDirectory = app.arguments().at(3);
+            qCritical() << "Wrong input, usage: pwa-to-twa [androidPackageName] [pwaUrl] [outputPath]";
+            qCritical() << "Example: pwa-to-twa com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa";
+            return 1;
         }
 
-        if (app.arguments().count() < 3) {
-            url = io.ask("Please input the PWA url");
-        } else {
-            url = app.arguments().at(2);
-        }
-
-        if (app.arguments().count() < 2) {
-            packageName = io.ask("Please input the app package name");
-        } else {
-            packageName = app.arguments().at(1);
-        }
+        auto url = app.arguments().at(2);
+        auto packageName = app.arguments().at(1);
+        auto outputDirectory = app.arguments().at(3);
 
         GitHelper gitHelper;
 

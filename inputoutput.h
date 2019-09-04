@@ -11,8 +11,8 @@ public:
 
     void write(QString text);
     void writeln(QString text);
-    QString readStdin();
-    QString ask(QString question);
+    //QString readStdin();
+    //QString ask(QString question);
 };
 
 #endif // INPUTOUTPUT_H

@@ -1,7 +1,5 @@
 #include "githelper.h"
 
-#include <QDebug>
-
 GitHelper::GitHelper()
 {
 
