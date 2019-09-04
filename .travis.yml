@@ -3,7 +3,7 @@ dist: bionic
 compiler: gcc
 
 services:
-	- docker
+    - docker
 
 script:
     - docker run --rm -it -v $(pwd):/app fffaraz/qt:static /bin/bash -c "cd /app && qmake && make"
