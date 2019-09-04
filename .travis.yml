@@ -1,0 +1,12 @@
+language: c++
+
+services:
+	- docker
+
+script:
+    - docker run --rm -it -v $(pwd):/app fffaraz/qt:static /bin/bash -c "cd /app && qmake && make"
+
+addons:
+    artifacts:
+        paths:
+            - pwa-to-twa
