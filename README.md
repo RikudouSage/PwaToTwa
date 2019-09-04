@@ -17,6 +17,9 @@ apps and it worked well but results with other frameworks
 may vary. If it doesn't work for you, create an
 [issue](https://github.com/RikudouSage/PwaToTwa/issues/new).
 
+> The PWA needs to specify that your app can access the
+content, read more [here](https://developers.google.com/digital-asset-links/v1/getting-started)
+
 ## Installation
 
 You can either download the compiled static binary from
