@@ -63,7 +63,7 @@ You need the Qt framework (tested with 5.10.1) and libgit2
 Change into the cloned directory and:
 
 - `git submodule init`
-- `git submoduel update`
+- `git submodule update`
 - `qmake pwa-to-twa.pro`
 - `make`
 
@@ -84,7 +84,7 @@ You need to have docker installed.
 Change into the cloned directory and:
 
 - `git submodule init`
-- `git submoduel update`
+- `git submodule update`
 - `./configure-static`
 - `./build-static`
 
