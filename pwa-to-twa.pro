@@ -5,7 +5,11 @@ CONFIG += c++14 console
 CONFIG -= app_bundle
 
 INCLUDEPATH += libgit/include
-LIBS += -L"$$_PRO_FILE_PWD_/libgit/build" -lgit2 -lssl -lcrypto
+LIBS += -lgit2 -lssl -lcrypto
+
+exists(pwa-to-twa.local.pro) {
+    include(pwa-to-twa.local.pro)
+}
 
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings

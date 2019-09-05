@@ -4,7 +4,8 @@ compiler: gcc
 services:
     - docker
 script:
-    - docker run --rm -it -v $(pwd):/app fffaraz/qt:static /bin/bash -c "cd /app/libgit && git submodule init && git submodule update && mkdir -p build && cd build && cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_CLAR=OFF .. && cmake --build . && cd /app && qmake && make"
+    - ./configure-static
+    - ./build-static
 deploy:
     provider: releases
     api_key: $PWA_TO_TWA_ACCESS_KEY

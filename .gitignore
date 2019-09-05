@@ -54,3 +54,9 @@ compile_commands.json
 
 # Binary
 /pwa-to-twa
+
+# Compilation
+!/build-static
+
+# Local config
+/pwa-to-twa.local.pro

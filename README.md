@@ -57,11 +57,14 @@ This tool needs these cli tools to be able to work:
 
 ## Building from source
 
-You need the Qt framework installed (tested with 5.10.1).
+You need the Qt framework (tested with 5.10.1) and libgit2
+(on Ubuntu you can use `apt install libgit2-dev`).
 
 Change into the cloned directory and:
 
-- `qmake`
+- `git submodule init`
+- `git submoduel update`
+- `qmake pwa-to-twa.pro`
 - `make`
 
 The binary file `pwa-to-twa` will be created, to test
@@ -80,7 +83,10 @@ You need to have docker installed.
 
 Change into the cloned directory and:
 
-- `docker run --rm -it -v $(pwd):/app fffaraz/qt:static /bin/bash -c "cd /app && qmake && make"`
+- `git submodule init`
+- `git submoduel update`
+- `./configure-static`
+- `./build-static`
 
 This command will download the necessary image and
 statically compile the app to binary file `pwa-to-twa`.

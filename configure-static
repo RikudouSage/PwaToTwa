@@ -1,0 +1,3 @@
+#!/bin/sh
+
+echo 'LIBS += -L"$$_PRO_FILE_PWD_/libgit/build"' > pwa-to-twa.local.pro
