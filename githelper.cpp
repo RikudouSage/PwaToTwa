@@ -1,8 +1,15 @@
 #include "githelper.h"
 
+#include <QDebug>
+
 GitHelper::GitHelper()
 {
+    git_libgit2_init();
+}
 
+GitHelper::~GitHelper()
+{
+    git_libgit2_shutdown();
 }
 
 void GitHelper::clone(QString directory)
@@ -17,9 +24,9 @@ void GitHelper::clone(QDir directory)
         throw QString("The directory already exists");
     }
 
-    QProcess process;
-    process.start("git", QStringList() << "clone" << URL << directory.absolutePath());
-    process.waitForFinished();
+    git_repository *repository = nullptr;
+    gitError(git_clone(&repository, URL.toStdString().c_str(), directory.absolutePath().toStdString().c_str(), nullptr));
+    git_repository_free(repository);
 }
 
 void GitHelper::checkout(QString directory)
@@ -33,10 +40,22 @@ void GitHelper::checkout(QDir directory)
         throw QString("The directory does not exist");
     }
 
-    QProcess process;
-    process.setWorkingDirectory(directory.absolutePath());
-    process.start("git", QStringList() << "checkout" << COMMIT);
-    process.waitForFinished();
+    git_checkout_options options = GIT_CHECKOUT_OPTIONS_INIT;
+    options.checkout_strategy = GIT_CHECKOUT_FORCE;
+
+    git_repository *repository = nullptr;
+    git_oid commitId;
+    git_commit *commit = nullptr;
+
+    gitError(git_repository_open(&repository, directory.absolutePath().toStdString().c_str()));
+    gitError(git_oid_fromstr(&commitId, COMMIT.toStdString().c_str()));
+    gitError(git_commit_lookup(&commit, repository, &commitId));
+
+    gitError(git_checkout_tree(repository, reinterpret_cast<const git_object *>(commit), &options));
+    git_repository_set_head_detached(repository, &commitId);
+
+    git_repository_free(repository);
+    git_commit_free(commit);
 }
 
 void GitHelper::reinitGitDirectory(QString directory)
@@ -54,10 +73,10 @@ void GitHelper::reinitGitDirectory(QDir directory)
     if(gitDir.exists()) {
         gitDir.removeRecursively();
 
-        QProcess git;
-        git.setWorkingDirectory(directory.absolutePath());
-        git.start("git", QStringList() << "init");
-        git.waitForFinished();
+        git_repository *repository = nullptr;
+
+        gitError(git_repository_init(&repository, directory.absolutePath().toStdString().c_str(), 0));
+        git_repository_free(repository);
     }
 }
 
@@ -72,12 +91,51 @@ void GitHelper::initialCommit(QDir directory)
         throw QString("The directory does not exist");
     }
 
-    QProcess git;
-    git.setWorkingDirectory(directory.absolutePath());
+    git_index *index = nullptr;
+    git_repository *repository = nullptr;
 
-    git.start("git", QStringList() << "add" << ".");
-    git.waitForFinished();
+    gitError(git_repository_open(&repository, directory.absolutePath().toStdString().c_str()));
+    gitError(git_repository_index(&index, repository));
 
-    git.start("git", QStringList() << "commit" << "-am" << "initial commit");
-    git.waitForFinished();
+    char *paths[] = {const_cast<char *>(".")};
+    git_strarray data = {paths, 1};
+
+    gitError(git_index_add_all(index, &data, GIT_INDEX_ADD_DEFAULT, nullptr, nullptr));
+    gitError(git_index_write(index));
+
+    git_signature *signature = nullptr;
+    git_oid treeId;
+    git_tree *tree = nullptr;
+
+    gitError(git_signature_now(&signature, "Initial Commit", "root@localhost"));
+    gitError(git_index_write_tree(&treeId, index));
+    gitError(git_tree_lookup(&tree, repository, &treeId));
+
+    git_oid newCommitId;
+
+    git_commit_create(
+                &newCommitId,
+                repository,
+                "HEAD",
+                signature,
+                signature,
+                "UTF-8",
+                "Initial commit",
+                tree,
+                0,
+                nullptr
+            );
+
+    git_index_free(index);
+    git_repository_free(repository);
+    git_signature_free(signature);
+    git_tree_free(tree);
+}
+
+void GitHelper::gitError(int status)
+{
+    if(status < 0) {
+        const git_error *e = giterr_last();
+        throw QString::fromUtf8(e->message);
+    }
 }
