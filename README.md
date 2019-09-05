@@ -53,7 +53,6 @@ value, it will be in a future version
 
 This tool needs these cli tools to be able to work:
 
-- git
 - convert (from ImageMagick)
 
 ## Building from source
