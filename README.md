@@ -83,8 +83,6 @@ You need to have docker installed.
 
 Change into the cloned directory and:
 
-- `git submodule init`
-- `git submodule update`
 - `./configure-static`
 - `./build-static`
 
