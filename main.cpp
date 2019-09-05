@@ -41,9 +41,9 @@ int main(int argc, char *argv[])
 
         WebsiteParser parser(url, manifestPath);
 
-        auto icons = parser.getImages();
         auto basicData = parser.getData();
         basicData.insert("package", packageName);
+        auto icons = parser.getImages();
 
         AndroidProjectModifier androidProject(outputDirectory);
         androidProject.addSupportLibrary();

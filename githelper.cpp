@@ -19,7 +19,7 @@ void GitHelper::clone(QDir directory)
 {
     directory = QDir(directory);
     if (directory.exists()) {
-        throw QString("The directory already exists");
+        throw QString("The directory '" + directory.absolutePath() + "' already exists");
     }
 
     git_repository *repository = nullptr;
@@ -34,8 +34,8 @@ void GitHelper::checkout(QString directory)
 
 void GitHelper::checkout(QDir directory)
 {
-    if(!directory.exists()) {
-        throw QString("The directory does not exist");
+    if (!directory.exists()) {
+        throw QString("The directory '" + directory.path() + "' does not exist");
     }
 
     git_checkout_options options = GIT_CHECKOUT_OPTIONS_INIT;
@@ -64,7 +64,7 @@ void GitHelper::reinitGitDirectory(QString directory)
 void GitHelper::reinitGitDirectory(QDir directory)
 {
     if(!directory.exists()) {
-        throw QString("The directory does not exist");
+        throw QString("The directory '" + directory.path() + "' does not exist");
     }
 
     QDir gitDir = directory.filePath(".git");
@@ -86,7 +86,7 @@ void GitHelper::initialCommit(QString directory)
 void GitHelper::initialCommit(QDir directory)
 {
     if(!directory.exists()) {
-        throw QString("The directory does not exist");
+        throw QString("The directory '" + directory.path() + "' does not exist");
     }
 
     git_index *index = nullptr;
@@ -134,6 +134,6 @@ void GitHelper::gitError(int status)
 {
     if(status < 0) {
         const git_error *e = giterr_last();
-        throw QString::fromUtf8(e->message);
+        throw "[Git Error]: " + QString::fromUtf8(e->message);
     }
 }

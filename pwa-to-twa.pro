@@ -5,7 +5,7 @@ CONFIG += c++14 console
 CONFIG -= app_bundle
 
 INCLUDEPATH += libgit/include
-LIBS += -lgit2 -lssl -lcrypto
+LIBS += -lgit2 -lssl -lcrypto -L"$$_PRO_FILE_PWD_/libgit/build"
 
 exists(pwa-to-twa.local.pro) {
     include(pwa-to-twa.local.pro)

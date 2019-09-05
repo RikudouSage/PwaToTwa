@@ -72,7 +72,7 @@ QString AndroidProjectModifier::getFileContent(const QString filepath)
 {
     QFile file(m_directory.absolutePath() + filepath);
     if(!file.exists() || !file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        throw QString("The file does not exist or could not be opened for reading");
+        throw QString("The file '" + file.fileName() + "' does not exist or could not be opened for reading");
     }
 
     QTextStream stream(&file);
@@ -88,7 +88,7 @@ void AndroidProjectModifier::updateFileContent(const QString filepath, const QSt
 {
     QFile file(m_directory.absolutePath() + filepath);
     if(!file.exists()  || !file.open(QIODevice::ReadWrite | QIODevice::Text | QIODevice::Truncate)) {
-        throw QString("The file does not exist or could not be opened for writing");
+        throw QString("The file '" + file.fileName() + "' does not exist or could not be opened for writing");
     }
 
     QTextStream stream(&file);

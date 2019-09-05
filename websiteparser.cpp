@@ -38,7 +38,7 @@ const QString WebsiteParser::getManifestUrl()
     if(!m_manifestPath.isNull() && !m_manifestPath.isEmpty()) {
         manifestUrl = m_manifestPath;
     } else {
-        QRegularExpression regex("(<link.*?rel=['\"]manifest['\"]).*?>");
+        QRegularExpression regex("(<link[^<>]*?rel=['\"]manifest['\"]).*?>");
         auto matches = regex.match(getWebsiteContent());
         if(!matches.hasMatch()) {
             throw QString("Could not detect the manifest automatically, try using --manifest option");
@@ -89,6 +89,28 @@ const QHash<QString, QString> WebsiteParser::getData()
 
     auto json = getManifestContent().object();
 
+    QStringList missingKeys;
+
+    if (!json.contains("short_name")) {
+        missingKeys << "short_name";
+    }
+
+    if (!json.contains("theme_color")) {
+        missingKeys << "theme_color";
+    }
+
+    if (!json.contains("background_color")) {
+        missingKeys << "background_color";
+    }
+
+    if (!json.contains("start_url")) {
+        missingKeys << "start_url";
+    }
+
+    if(!missingKeys.empty()) {
+        throw QString("The manifest at url '" + getManifestUrl() + "' is missing these keys: " + missingKeys.join(", "));
+    }
+
     result.insert("hostname", m_url.host());
     result.insert("short_name", json.take("short_name").toString());
     result.insert("theme_color", json.take("theme_color").toString());
@@ -104,21 +126,26 @@ const QList<QHash<QString, QString>> WebsiteParser::getImages()
 
     auto json = getManifestContent().object().take("icons").toArray();
 
+    if (json.empty()) {
+        throw QString("The manifest at url '" + getManifestUrl() + "' does not contain any icons");
+    }
+
     QJsonArray::const_iterator iterator;
 
     for(iterator = json.constBegin(); iterator != json.constEnd(); ++iterator) {
         auto icon = (*iterator).toObject();
 
         auto sizes = icon.take("sizes").toString().split("x");
+        auto url = icon.take("src").toString();
 
         if(sizes.length() != 2 || sizes.at(0) != sizes.at(1)) {
-            qWarning() << "[Warning] The icon does not have a valid size attribute, ignoring";
+            qWarning() << "[Warning] The icon with url '" + url + "' does not have a valid size attribute, ignoring";
             continue;
         }
 
         QHash<QString, QString> iconHash;
         iconHash.insert("size", sizes.at(0));
-        iconHash.insert("url", getUrl(icon.take("src").toString()));
+        iconHash.insert("url", getUrl(url));
         result.append(iconHash);
     }
 
