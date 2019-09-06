@@ -11,11 +11,13 @@ int main(int argc, char *argv[])
     try {
         QCoreApplication app(argc, argv);
 
-        if(app.arguments().count() < 4) {
-            qCritical() << "Wrong input, usage: pwa-to-twa androidPackageName pwaUrl outputPath [--manifest path-to-manifest]";
-            qCritical() << "Example: pwa-to-twa com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa";
-            qCritical() << "Example: pwa-to-twa com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa --manifest relative/path/to/manifest";
-            return 1;
+        if(app.arguments().count() < 4 || app.arguments().contains("--help")) {
+            const QString binaryName = app.arguments().at(0);
+
+            io.writeError("Usage: " + binaryName + " androidPackageName pwaUrl outputPath [--manifest path-to-manifest]");
+            io.writeError("Example: " + binaryName + " com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa");
+            io.writeError("Example: " + binaryName + " com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa --manifest relative/path/to/manifest");
+            return app.arguments().contains("--help") ? 0 : 1;
         }
 
         QString manifestPath;

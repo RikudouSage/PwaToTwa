@@ -10,9 +10,8 @@ public:
     InputOutput();
 
     void write(QString text);
+    void writeError(QString text);
     void writeln(QString text);
-    //QString readStdin();
-    //QString ask(QString question);
 };
 
 #endif // INPUTOUTPUT_H

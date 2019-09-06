@@ -51,19 +51,8 @@ void AndroidProjectModifier::addImages(QList<QHash<QString, QString>> images)
     QFile imageFile(downloadImage(largestImage.value("url")));
     largestImage.insert("path", imageFile.fileName());
 
-    QFile mdpi(resizeImage(largestImage, "48"));
-    QFile hdpi(resizeImage(largestImage, "72"));
-    QFile xhdpi(resizeImage(largestImage, "96"));
-    QFile xxhdpi(resizeImage(largestImage, "144"));
-    QFile xxxhdpi(resizeImage(largestImage, "192"));
-
-    const auto movePath = m_directory.absolutePath() + "/app/src/main/res/mipmap-";
-
-    QFile::remove(movePath + "mdpi" + "/ic_launcher.png") && mdpi.rename(movePath + "mdpi" + "/ic_launcher.png");
-    QFile::remove(movePath + "hdpi" + "/ic_launcher.png") && hdpi.rename(movePath + "hdpi" + "/ic_launcher.png");
-    QFile::remove(movePath + "xhdpi" + "/ic_launcher.png") && xhdpi.rename(movePath + "xhdpi" + "/ic_launcher.png");
-    QFile::remove(movePath + "xxhdpi" + "/ic_launcher.png") && xxhdpi.rename(movePath + "xxhdpi" + "/ic_launcher.png");
-    QFile::remove(movePath + "xxxhdpi" + "/ic_launcher.png") && xxxhdpi.rename(movePath + "xxxhdpi" + "/ic_launcher.png");
+    addIcons(largestImage);
+    addSplash(largestImage);
 
     imageFile.remove();
 }
@@ -158,4 +147,40 @@ QString AndroidProjectModifier::resizeImage(const QHash<QString, QString> imageD
     convert.waitForFinished();
 
     return tmpFile.fileName();
+}
+
+void AndroidProjectModifier::addIcons(QHash<QString, QString> image)
+{
+    // todo rewrite this
+    QFile mdpi(resizeImage(image, "48"));
+    QFile hdpi(resizeImage(image, "72"));
+    QFile xhdpi(resizeImage(image, "96"));
+    QFile xxhdpi(resizeImage(image, "144"));
+    QFile xxxhdpi(resizeImage(image, "192"));
+
+    const auto movePath = m_directory.absolutePath() + "/app/src/main/res/mipmap-";
+
+    QFile::remove(movePath + "mdpi" + "/ic_launcher.png") && mdpi.rename(movePath + "mdpi" + "/ic_launcher.png");
+    QFile::remove(movePath + "hdpi" + "/ic_launcher.png") && hdpi.rename(movePath + "hdpi" + "/ic_launcher.png");
+    QFile::remove(movePath + "xhdpi" + "/ic_launcher.png") && xhdpi.rename(movePath + "xhdpi" + "/ic_launcher.png");
+    QFile::remove(movePath + "xxhdpi" + "/ic_launcher.png") && xxhdpi.rename(movePath + "xxhdpi" + "/ic_launcher.png");
+    QFile::remove(movePath + "xxxhdpi" + "/ic_launcher.png") && xxxhdpi.rename(movePath + "xxxhdpi" + "/ic_launcher.png");
+}
+
+void AndroidProjectModifier::addSplash(QHash<QString, QString> image)
+{
+    // todo rewrite this
+    QFile mdpi(resizeImage(image, "320"));
+    QFile hdpi(resizeImage(image, "480"));
+    QFile xhdpi(resizeImage(image, "640"));
+    QFile xxhdpi(resizeImage(image, "960"));
+    QFile xxxhdpi(resizeImage(image, "1280"));
+
+    const auto movePath = m_directory.absolutePath() + "/app/src/main/res/drawable-";
+
+    QFile::remove(movePath + "mdpi" + "/splash.png") && mdpi.rename(movePath + "mdpi" + "/splash.png");
+    QFile::remove(movePath + "hdpi" + "/splash.png") && hdpi.rename(movePath + "hdpi" + "/splash.png");
+    QFile::remove(movePath + "xhdpi" + "/splash.png") && xhdpi.rename(movePath + "xhdpi" + "/splash.png");
+    QFile::remove(movePath + "xxhdpi" + "/splash.png") && xxhdpi.rename(movePath + "xxhdpi" + "/splash.png");
+    QFile::remove(movePath + "xxxhdpi" + "/splash.png") && xxxhdpi.rename(movePath + "xxxhdpi" + "/splash.png");
 }

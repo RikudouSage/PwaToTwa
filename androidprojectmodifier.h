@@ -28,6 +28,8 @@ private:
     QString downloadImage(const QString url);
     QString randomString(int length = 15);
     QString resizeImage(const QHash<QString, QString> imageData, QString size);
+    void addIcons(QHash<QString, QString> image);
+    void addSplash(QHash<QString, QString> image);
 
     QDir m_directory;
 };
