@@ -46,9 +46,6 @@ Example with --manifest option:
 
 `pwa-to-twa com.example.my_pwa https://my_pwa.example.com ./my-cool-pwa --manifest /manifest.json`
 
-> Note: Currently the splash image is not replaced from the default
-value, it will be in a future version
-
 ## Dependencies
 
 This tool needs these cli tools to be able to work:
