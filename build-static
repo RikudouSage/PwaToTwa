@@ -1,3 +1,9 @@
 #!/bin/sh
 
-docker run --rm -it -v $(pwd):/app rikudousage/qt-static:5.9.0 -c "cd /app/libgit && git submodule init && git submodule update && mkdir -p build && cd build && cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_CLAR=OFF .. && cmake --build . && cd /app && qmake pwa-to-twa.pro && make"
+QT_STATIC_VERSION="5.9.0"
+
+if [ "$1" ]; then
+    QT_STATIC_VERSION="$1"
+fi
+
+docker run --rm -it -v $(pwd):/app rikudousage/qt-static:$QT_STATIC_VERSION -c "cd /app/libgit && git submodule init && git submodule update && mkdir -p build && cd build && cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_CLAR=OFF .. && cmake --build . && cd /app && qmake pwa-to-twa.pro && make"
