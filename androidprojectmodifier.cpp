@@ -146,6 +146,10 @@ QString AndroidProjectModifier::resizeImage(const QHash<QString, QString> imageD
     convert.start("convert", QStringList() << imageData.value("path") << "-resize" << size + "x" + size << tmpFile.fileName());
     convert.waitForFinished();
 
+    if (convert.exitCode() != 0) {
+        qWarning() << "Warning: could not resize the image. Do you have the 'convert' utility installed?";
+    }
+
     return tmpFile.fileName();
 }
 

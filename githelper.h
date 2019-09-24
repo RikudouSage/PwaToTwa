@@ -26,7 +26,7 @@ public:
 
 private:
     const QString URL = "https://github.com/GoogleChromeLabs/svgomg-twa";
-    const QString COMMIT = "8fb33ee8a5e53c3534db2f7730f9bb61bcd9f5dd";
+    const QString COMMIT = "a5603e12141071fcffa60080c258b5c68b638af6";
 
     void gitError(int status);
 };
