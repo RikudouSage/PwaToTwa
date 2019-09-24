@@ -1,17 +1,25 @@
 language: cpp
 dist: bionic
 compiler: gcc
+env:
+    - VERSION=${TRAVIS_TAG/v/}
 services:
     - docker
 script:
+    - mkdir built
     - ./configure-static
-    - ./build-static
+    - docker run --rm -it -v $(pwd):/app rikudousage/qt-static:5.9 -c "cd /app/libgit && git submodule init && git submodule update && mkdir -p build && cd build && cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_CLAR=OFF .. && cmake --build . && cd /app && qmake pwa-to-twa.pro && make && cd /app/libgit && rm -rf build"
+    - mv pwa-to-twa built/pwa-to-twa_${VERSION}_16.04_xenial
+    - docker run --rm -it -v $(pwd):/app rikudousage/qt-static:5.9 -c "cd /app && make distclean"
+    - docker run --rm -it -v $(pwd):/app rikudousage/qt-static:5.13 -c "cd /app/libgit && git submodule init && git submodule update && mkdir -p build && cd build && cmake -DBUILD_SHARED_LIBS=OFF -DBUILD_CLAR=OFF .. && cmake --build . && cd /app && qmake pwa-to-twa.pro && make && cd /app/libgit && rm -rf build"
+    - mv pwa-to-twa built/pwa-to-twa_${VERSION}_18.04_bionic
 deploy:
     provider: releases
     api_key: $PWA_TO_TWA_ACCESS_KEY
     skip_cleanup: true
-    file:
-        - pwa-to-twa
+    name: Version $VERSION
+    file_glob: true
+    file: built/*
     on:
         tags: true
 branches:
