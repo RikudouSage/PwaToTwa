@@ -147,7 +147,7 @@ QString AndroidProjectModifier::resizeImage(const QHash<QString, QString> imageD
     convert.waitForFinished();
 
     if (convert.exitCode() != 0) {
-        qWarning() << "Warning: could not resize the image. Do you have the 'convert' utility installed?";
+        throw QString("Warning: could not resize the image. Do you have the 'convert' utility installed?");
     }
 
     return tmpFile.fileName();

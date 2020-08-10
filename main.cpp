@@ -4,6 +4,7 @@
 #include "githelper.h"
 #include "websiteparser.h"
 #include "androidprojectmodifier.h"
+#include "coloredstring.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,8 +12,8 @@ int main(int argc, char *argv[])
     try {
         QCoreApplication app(argc, argv);
 
-        if(app.arguments().count() < 4 || app.arguments().contains("--help")) {
-            const QString binaryName = app.arguments().at(0);
+        if (app.arguments().count() < 4 || app.arguments().contains("--help")) {
+            const auto binaryName = app.arguments().at(0);
 
             io.writeError("Usage: " + binaryName + " androidPackageName pwaUrl outputPath [--manifest path-to-manifest]");
             io.writeError("Example: " + binaryName + " com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa");
@@ -22,9 +23,9 @@ int main(int argc, char *argv[])
 
         QString manifestPath;
 
-        if(app.arguments().contains("--manifest")) {
-            int index = app.arguments().indexOf("--manifest") + 1;
-            if(app.arguments().count() <= index) {
+        if (app.arguments().contains("--manifest")) {
+            auto index = app.arguments().indexOf("--manifest") + 1;
+            if (app.arguments().count() <= index) {
                 qCritical() << "You must set a value for --manifest";
                 return 1;
             }
@@ -55,6 +56,15 @@ int main(int argc, char *argv[])
         gitHelper.initialCommit(outputDirectory);
 
         io.writeln("Successfully created, you can now open the project in Android Studio and build the apk");
+        io.writeln("");
+        io.writeln(ColoredString("Don't forget to include the Digital Asset Link on your website at <green>" + url + "/.well-known/assetlinks.json</>:"));
+        io.writeln(ColoredString(
+                       "[{ \n"
+                       "    \"relation\": [\"delegate_permission/common.handle_all_urls\"], \n"
+                       "    \"target\":   {\"namespace\": \"android_app\", \"package_name\": \"<green>" + packageName + "</>\", \n"
+                       "                 \"sha256_cert_fingerprints\": [\"<green>hash_of_app_certificate</>\"]} \n"
+                       "}]"
+        ));
 
         return 0;
     } catch (QString e) {

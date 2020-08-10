@@ -24,6 +24,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         androidprojectmodifier.cpp \
+        coloredstring.cpp \
         githelper.cpp \
         inputoutput.cpp \
         main.cpp \
@@ -36,6 +37,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 
 HEADERS += \
     androidprojectmodifier.h \
+    coloredstring.h \
     githelper.h \
     inputoutput.h \
     websiteparser.h
