@@ -36,7 +36,10 @@ This tool takes three parameters:
 
 If the manifest path is not in html source code or could
 not be detected for any other reason, you can add the
-relative path to your manifest using the --manifest option.
+relative path to your manifest using the --manifest option (relative to the PWA url).
+
+You can even have the manifest in a local file and use it instead of fetching it from the web using the --local-manifest
+option.
 
 Example:
 
@@ -45,6 +48,10 @@ Example:
 Example with --manifest option:
 
 `pwa-to-twa com.example.my_pwa https://my_pwa.example.com ./my-cool-pwa --manifest /manifest.json`
+
+Example with --local-manifest:
+
+`pwa-to-twa com.example.my_pwa https://my_pwa.example.com ./my-cool-pwa --local-manifest ./manifest.json`
 
 ## Dependencies
 
@@ -69,9 +76,10 @@ that everything works run `./pwa-to-twa`, you should see
 something like this:
 
 ```
-Wrong input, usage: pwa-to-twa androidPackageName pwaUrl outputPath [--manifest path-to-manifest]
-Example: pwa-to-twa com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa
-Example: pwa-to-twa com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa --manifest relative/path/to/manifest
+Usage: ./pwa-to-twa androidPackageName pwaUrl outputPath [--manifest path-to-manifest] [--local-manifest path-to-manifest]
+Example: ./pwa-to-twa com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa
+Example: ./pwa-to-twa com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa --manifest relative/path/to/manifest
+Example: ./pwa-to-twa com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa --local-manifest ./manifest.json
 ```
 
 ### Building statically
