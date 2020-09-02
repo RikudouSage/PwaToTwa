@@ -123,8 +123,7 @@ QString AndroidProjectModifier::randomString(int length)
     const auto possibleCharacters = QStringLiteral("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789");
 
     QString randomString;
-    for(int i = 0; i < length; ++i)
-    {
+    for(int i = 0; i < length; ++i) {
        int index = qrand() % possibleCharacters.length();
        QChar nextChar = possibleCharacters.at(index);
        randomString.append(nextChar);
@@ -147,7 +146,7 @@ QString AndroidProjectModifier::resizeImage(const QHash<QString, QString> imageD
     convert.waitForFinished();
 
     if (convert.exitCode() != 0) {
-        throw QString("Warning: could not resize the image. Do you have the 'convert' utility installed?");
+        throw QString("Error: could not resize the image. Do you have the 'convert' utility installed?");
     }
 
     return tmpFile.fileName();

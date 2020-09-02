@@ -6,6 +6,19 @@ WebsiteParser::WebsiteParser(QString url, QString manifestPath)
     m_manifestPath = manifestPath;
 }
 
+WebsiteParser::WebsiteParser(QString url, QFile &manifestFile)
+{
+    m_url.setUrl(url);
+    m_manifestFile = &manifestFile;
+}
+
+WebsiteParser::~WebsiteParser()
+{
+    if (m_manifestFile != nullptr) {
+        delete m_manifestFile;
+    }
+}
+
 const QString WebsiteParser::getWebsiteContent()
 {
     if(!m_websiteContent.isNull() && !m_websiteContent.isEmpty()) {
@@ -60,27 +73,47 @@ const QString WebsiteParser::getManifestUrl()
 
 const QJsonDocument WebsiteParser::getManifestContent()
 {
-    if(m_manifestContent.isNull() || m_manifestContent.isEmpty()) {
-        QUrl manifestUrl = getManifestUrl();
-
-        QNetworkAccessManager networkManager;
-        QNetworkRequest request(manifestUrl);
-        QEventLoop loop;
-
-        QObject::connect(&networkManager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
-
-        auto reply = networkManager.get(request);
-
-        loop.exec();
-
-        QString response = reply->readAll();
-
-        delete reply;
-
-        m_manifestContent = response;
+    if (m_manifestContent.isNull() || m_manifestContent.isEmpty()) {
+        if (m_manifestFile == nullptr) {
+            m_manifestContent = getDownloadedManifestContent();
+        } else {
+            m_manifestContent = getLocalManifestContent();
+        }
     }
 
     return QJsonDocument::fromJson(m_manifestContent.toUtf8());
+}
+
+const QString WebsiteParser::getDownloadedManifestContent()
+{
+    QUrl manifestUrl = getManifestUrl();
+
+    QNetworkAccessManager networkManager;
+    QNetworkRequest request(manifestUrl);
+    QEventLoop loop;
+
+    QObject::connect(&networkManager, &QNetworkAccessManager::finished, &loop, &QEventLoop::quit);
+
+    auto reply = networkManager.get(request);
+
+    loop.exec();
+
+    QString response = reply->readAll();
+
+    delete reply;
+
+    return response.toUtf8();
+}
+
+const QString WebsiteParser::getLocalManifestContent()
+{
+    if (!m_manifestFile->open(QIODevice::ReadOnly)) {
+        throw QString("Could not open local manifest file for writing");
+    }
+    auto result = m_manifestFile->readAll();
+    m_manifestFile->close();
+
+    return result;
 }
 
 const QHash<QString, QString> WebsiteParser::getData()
