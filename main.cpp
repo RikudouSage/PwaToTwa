@@ -1,4 +1,5 @@
 #include <QCoreApplication>
+#include <QScopedPointer>
 
 #include "inputoutput.h"
 #include "githelper.h"
@@ -15,21 +16,31 @@ int main(int argc, char *argv[])
         if (app.arguments().count() < 4 || app.arguments().contains("--help")) {
             const auto binaryName = app.arguments().at(0);
 
-            io.writeError("Usage: " + binaryName + " androidPackageName pwaUrl outputPath [--manifest path-to-manifest]");
+            io.writeError("Usage: " + binaryName + " androidPackageName pwaUrl outputPath [--manifest path-to-manifest] [--local-manifest path-to-manifest]");
             io.writeError("Example: " + binaryName + " com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa");
             io.writeError("Example: " + binaryName + " com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa --manifest relative/path/to/manifest");
+            io.writeError("Example: " + binaryName + " com.vendor.pwa https://pwa.vendor.com ./my-cool-pwa --local-manifest ./manifest.json");
             return app.arguments().contains("--help") ? 0 : 1;
         }
 
         QString manifestPath;
+        QFile *localManifestFile = nullptr;
 
         if (app.arguments().contains("--manifest")) {
             auto index = app.arguments().indexOf("--manifest") + 1;
             if (app.arguments().count() <= index) {
-                qCritical() << "You must set a value for --manifest";
-                return 1;
+                throw QString("You must set a value for --manifest");
             }
             manifestPath = app.arguments().at(index);
+        } else if (app.arguments().contains("--local-manifest")) {
+            auto index = app.arguments().indexOf("--local-manifest") + 1;
+            if (app.arguments().count() <= index) {
+                throw QString("You must set a value for --local-manifest");
+            }
+            localManifestFile = new QFile(app.arguments().at(index), &app);
+            if (!localManifestFile->exists()) {
+                throw QString("The specified local manifest file does not exist");
+            }
         }
 
         auto url = app.arguments().at(2);
@@ -42,11 +53,15 @@ int main(int argc, char *argv[])
         gitHelper.checkout(outputDirectory);
         gitHelper.reinitGitDirectory(outputDirectory);
 
-        WebsiteParser parser(url, manifestPath);
+        QScopedPointer<WebsiteParser> parser(
+                    localManifestFile == nullptr
+                    ? new WebsiteParser(url, manifestPath)
+                    : new WebsiteParser(url, *localManifestFile)
+        );
 
-        auto basicData = parser.getData();
+        auto basicData = parser->getData();
         basicData.insert("package", packageName);
-        auto icons = parser.getImages();
+        auto icons = parser->getImages();
 
         AndroidProjectModifier androidProject(outputDirectory);
         androidProject.addSupportLibrary();
