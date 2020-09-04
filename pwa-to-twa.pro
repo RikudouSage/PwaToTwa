@@ -28,6 +28,7 @@ SOURCES += \
         githelper.cpp \
         inputoutput.cpp \
         main.cpp \
+        newversionchecker.cpp \
         websiteparser.cpp
 
 # Default rules for deployment.
@@ -40,4 +41,5 @@ HEADERS += \
     coloredstring.h \
     githelper.h \
     inputoutput.h \
+    newversionchecker.h \
     websiteparser.h

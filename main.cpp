@@ -6,12 +6,19 @@
 #include "websiteparser.h"
 #include "androidprojectmodifier.h"
 #include "coloredstring.h"
+#include "newversionchecker.h"
 
 int main(int argc, char *argv[])
 {
     InputOutput io;
     try {
         QCoreApplication app(argc, argv);
+
+        NewVersionChecker newVersionChecker;
+
+        if (newVersionChecker.isNewVersionAvailable()) {
+            io.writeError(ColoredString("<green>New version available at https://github.com/RikudouSage/PwaToTwa/releases/latest</green>"));
+        }
 
         if (app.arguments().count() < 4 || app.arguments().contains("--help")) {
             const auto binaryName = app.arguments().at(0);
